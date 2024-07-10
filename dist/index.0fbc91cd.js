@@ -589,61 +589,35 @@ var _p5 = require("p5");
 var _p5Default = parcelHelpers.interopDefault(_p5);
 var _beetle03Mp4 = require("../assets/videos/beetle_03.mp4");
 var _beetle03Mp4Default = parcelHelpers.interopDefault(_beetle03Mp4);
+var _utils = require("./utils");
 new (0, _p5Default.default)((sk)=>{
     let animalVideo;
-    let videoReady = false;
+    let videoDimensions;
     sk.preload = ()=>{
-        animalVideo = sk.createVideo((0, _beetle03Mp4Default.default), ()=>{
-            console.log("Video is ready!");
-            videoReady = true;
-            animalVideo.volume(0);
-            animalVideo.loop();
-        });
-        animalVideo.hide();
+        animalVideo = sk.createVideo((0, _beetle03Mp4Default.default));
     };
     sk.setup = ()=>{
         sk.createCanvas(sk.windowWidth, sk.windowHeight);
+        animalVideo.loop();
+        animalVideo.hide();
+        animalVideo.elt.addEventListener("loadedmetadata", ()=>{
+            videoDimensions = (0, _utils.calculateVideoDimensions)(sk, animalVideo);
+        });
     };
     sk.draw = ()=>{
-        sk.background(0); // Black background to fill any gaps
-        if (videoReady && animalVideo.loadedmetadata) displayVideoFullScreen();
-        else {
-            sk.fill(255);
-            sk.textSize(24);
-            sk.textAlign(sk.CENTER, sk.CENTER);
-            sk.text("Click to start video", sk.width / 2, sk.height / 2);
-        }
-        // Your existing drawing code
-        sk.fill(0, 0, 100);
-        sk.noStroke();
-        sk.ellipse(10, 10, 100);
+        sk.background(0);
+        if (videoDimensions) sk.image(animalVideo, videoDimensions.x, videoDimensions.y, videoDimensions.w, videoDimensions.h);
+    // sk.fill(0, 0, 100, 50);
+    // sk.noStroke();
+    // sk.ellipse(sk.mouseX, sk.mouseY, 50, 50);
     };
-    function displayVideoFullScreen() {
-        let vidW = animalVideo.width;
-        let vidH = animalVideo.height;
-        let canvasRatio = sk.width / sk.height;
-        let videoRatio = vidW / vidH;
-        let x = 0;
-        let y = 0;
-        let w = sk.width;
-        let h = sk.height;
-        if (canvasRatio > videoRatio) {
-            // Canvas is wider than video
-            h = sk.width / videoRatio;
-            y = (sk.height - h) / 2;
-        } else {
-            // Canvas is taller than video
-            w = sk.height * videoRatio;
-            x = (sk.width - w) / 2;
-        }
-        sk.image(animalVideo, x, y, w, h);
-    }
     sk.windowResized = ()=>{
         sk.resizeCanvas(sk.windowWidth, sk.windowHeight);
+        if (animalVideo.width) videoDimensions = (0, _utils.calculateVideoDimensions)(sk, animalVideo);
     };
 });
 
-},{"p5":"7Uk5U","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../assets/videos/beetle_03.mp4":"gznTn"}],"7Uk5U":[function(require,module,exports) {
+},{"p5":"7Uk5U","./utils":"bVlgj","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../assets/videos/beetle_03.mp4":"gznTn"}],"7Uk5U":[function(require,module,exports) {
 /*! p5.js v1.9.4 May 21, 2024 */ var global = arguments[3];
 !function(e1) {
     module.exports = e1();
@@ -32664,7 +32638,63 @@ new (0, _p5Default.default)((sk)=>{
     ])(264);
 });
 
-},{}],"gkKU3":[function(require,module,exports) {
+},{}],"bVlgj":[function(require,module,exports) {
+// ---- SAVE P5 CANVAS SNAPSHOT AS PNG
+// -----------------------------------
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "calculateVideoDimensions", ()=>calculateVideoDimensions);
+let countSaved = 1;
+function saveSnapshot(densityFactor = 2, filename = "sketch") {
+    sk.keyPressed = ()=>{
+        if (sk.key === "s" || sk.key === "S") {
+            const currentDensity = sk.pixelDensity();
+            sk.pixelDensity(defaultDensity * densityFactor);
+            sk.redraw(); // Force a redraw at the new density
+            sk.saveCanvas(`${filename}${countSaved}`, "png");
+            countSaved++;
+            sk.pixelDensity(currentDensity);
+            sk.redraw();
+        }
+    };
+}
+// ---- SINOIDAL PULSE
+// -------------------
+function pulse(sk1, min, max, time) {
+    const mid = (min + max) / 2;
+    const amplitude = (max - min) / 2;
+    return amplitude * sk1.sin(sk1.frameCount * (sk1.TWO_PI / time)) + mid;
+}
+// ---- ADJUST VIDEO DIMENSIONS FOR RESPONSIVE FULL SCREEN VIDEO
+// -------------------------------------------------------------
+// USAGE:
+// const videoDimensions = calculateVideoDimensions(sk, myVideo);
+// sk.image(myVideo, videoDimensions.x, videoDimensions.y, videoDimensions.w, videoDimensions.h);
+function calculateVideoDimensions(sk1, video) {
+    let canvasRatio = sk1.width / sk1.height;
+    let videoRatio = video.width / video.height;
+    let x = 0;
+    let y = 0;
+    let w = sk1.width;
+    let h = sk1.height;
+    if (canvasRatio > videoRatio) {
+        // Canvas is wider than video
+        h = sk1.width / videoRatio;
+        y = (sk1.height - h) / 2;
+    } else {
+        // Canvas is taller than video
+        w = sk1.height * videoRatio;
+        x = (sk1.width - w) / 2;
+    }
+    return {
+        x,
+        y,
+        w,
+        h
+    };
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
