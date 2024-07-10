@@ -617,7 +617,7 @@ new (0, _p5Default.default)((sk)=>{
     };
 });
 
-},{"p5":"7Uk5U","./utils":"bVlgj","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../assets/videos/beetle_03.mp4":"gznTn"}],"7Uk5U":[function(require,module,exports) {
+},{"p5":"7Uk5U","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../assets/videos/beetle_03.mp4":"gznTn","./utils":"bVlgj"}],"7Uk5U":[function(require,module,exports) {
 /*! p5.js v1.9.4 May 21, 2024 */ var global = arguments[3];
 !function(e1) {
     module.exports = e1();
@@ -32638,63 +32638,7 @@ new (0, _p5Default.default)((sk)=>{
     ])(264);
 });
 
-},{}],"bVlgj":[function(require,module,exports) {
-// ---- SAVE P5 CANVAS SNAPSHOT AS PNG
-// -----------------------------------
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "calculateVideoDimensions", ()=>calculateVideoDimensions);
-let countSaved = 1;
-function saveSnapshot(densityFactor = 2, filename = "sketch") {
-    sk.keyPressed = ()=>{
-        if (sk.key === "s" || sk.key === "S") {
-            const currentDensity = sk.pixelDensity();
-            sk.pixelDensity(defaultDensity * densityFactor);
-            sk.redraw();
-            sk.saveCanvas(`${filename}${countSaved}`, "png");
-            countSaved++;
-            sk.pixelDensity(currentDensity);
-            sk.redraw();
-        }
-    };
-}
-// ---- SINOIDAL PULSE
-// -------------------
-function pulse(sk1, min, max, time) {
-    const mid = (min + max) / 2;
-    const amplitude = (max - min) / 2;
-    return amplitude * sk1.sin(sk1.frameCount * (sk1.TWO_PI / time)) + mid;
-}
-// ---- ADJUST VIDEO DIMENSIONS FOR RESPONSIVE FULL SCREEN VIDEO
-// -------------------------------------------------------------
-// USAGE:
-// const videoDimensions = calculateVideoDimensions(sk, myVideo);
-// sk.image(myVideo, videoDimensions.x, videoDimensions.y, videoDimensions.w, videoDimensions.h);
-function calculateVideoDimensions(sk1, video) {
-    let canvasRatio = sk1.width / sk1.height;
-    let videoRatio = video.width / video.height;
-    let x = 0;
-    let y = 0;
-    let w = sk1.width;
-    let h = sk1.height;
-    if (canvasRatio > videoRatio) {
-        // Canvas is wider than video
-        h = sk1.width / videoRatio;
-        y = (sk1.height - h) / 2;
-    } else {
-        // Canvas is taller than video
-        w = sk1.height * videoRatio;
-        x = (sk1.width - w) / 2;
-    }
-    return {
-        x,
-        y,
-        w,
-        h
-    };
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+},{}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -32762,6 +32706,62 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}]},["h9Rts","fFaKF"], "fFaKF", "parcelRequire94c2")
+},{}],"bVlgj":[function(require,module,exports) {
+// ---- SAVE P5 CANVAS SNAPSHOT AS PNG
+// -----------------------------------
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "calculateVideoDimensions", ()=>calculateVideoDimensions);
+let countSaved = 1;
+function saveSnapshot(densityFactor = 2, filename = "sketch") {
+    sk.keyPressed = ()=>{
+        if (sk.key === "s" || sk.key === "S") {
+            const currentDensity = sk.pixelDensity();
+            sk.pixelDensity(defaultDensity * densityFactor);
+            sk.redraw();
+            sk.saveCanvas(`${filename}${countSaved}`, "png");
+            countSaved++;
+            sk.pixelDensity(currentDensity);
+            sk.redraw();
+        }
+    };
+}
+// ---- SINOIDAL PULSE
+// -------------------
+function pulse(sk1, min, max, time) {
+    const mid = (min + max) / 2;
+    const amplitude = (max - min) / 2;
+    return amplitude * sk1.sin(sk1.frameCount * (sk1.TWO_PI / time)) + mid;
+}
+// ---- ADJUST VIDEO DIMENSIONS FOR RESPONSIVE FULL SCREEN VIDEO
+// -------------------------------------------------------------
+// USAGE:
+// const videoDimensions = calculateVideoDimensions(sk, myVideo);
+// sk.image(myVideo, videoDimensions.x, videoDimensions.y, videoDimensions.w, videoDimensions.h);
+function calculateVideoDimensions(sk1, video) {
+    let canvasRatio = sk1.width / sk1.height;
+    let videoRatio = video.width / video.height;
+    let x = 0;
+    let y = 0;
+    let w = sk1.width;
+    let h = sk1.height;
+    if (canvasRatio > videoRatio) {
+        // Canvas is wider than video
+        h = sk1.width / videoRatio;
+        y = (sk1.height - h) / 2;
+    } else {
+        // Canvas is taller than video
+        w = sk1.height * videoRatio;
+        x = (sk1.width - w) / 2;
+    }
+    return {
+        x,
+        y,
+        w,
+        h
+    };
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["h9Rts","fFaKF"], "fFaKF", "parcelRequire94c2")
 
 //# sourceMappingURL=index.0fbc91cd.js.map
