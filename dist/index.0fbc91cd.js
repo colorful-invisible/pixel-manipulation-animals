@@ -587,37 +587,59 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _p5 = require("p5");
 var _p5Default = parcelHelpers.interopDefault(_p5);
-var _beetle03Mp4 = require("../assets/videos/beetle_03.mp4");
-var _beetle03Mp4Default = parcelHelpers.interopDefault(_beetle03Mp4);
+var _beetle02Mp4 = require("../assets/videos/beetle_02.mp4");
+var _beetle02Mp4Default = parcelHelpers.interopDefault(_beetle02Mp4);
 var _utils = require("./utils");
 new (0, _p5Default.default)((sk)=>{
     let animalVideo;
     let videoDimensions;
+    let defaultDensity;
+    let videoReady = false;
     sk.preload = ()=>{
-        animalVideo = sk.createVideo((0, _beetle03Mp4Default.default));
+        animalVideo = sk.createVideo((0, _beetle02Mp4Default.default));
+        animalVideo.elt.muted = true; // Mute the video
+        animalVideo.elt.playsInline = true; // Allow inline playback on iOS
     };
+    function attemptAutoplay() {
+        let playPromise = animalVideo.elt.play();
+        if (playPromise !== undefined) playPromise.then((_)=>{
+            // Autoplay started
+            animalVideo.loop();
+        }).catch((error)=>{
+            // Autoplay was prevented
+            console.warn("Autoplay was prevented:", error);
+        // You might want to add a subtle play button here as a fallback
+        });
+    }
     sk.setup = ()=>{
+        defaultDensity = sk.displayDensity();
+        sk.pixelDensity(defaultDensity);
         sk.createCanvas(sk.windowWidth, sk.windowHeight);
-        animalVideo.loop();
         animalVideo.hide();
         animalVideo.elt.addEventListener("loadedmetadata", ()=>{
             videoDimensions = (0, _utils.calculateVideoDimensions)(sk, animalVideo);
+            videoReady = true;
+            attemptAutoplay();
         });
     };
     sk.draw = ()=>{
         sk.background(0);
-        if (videoDimensions) sk.image(animalVideo, videoDimensions.x, videoDimensions.y, videoDimensions.w, videoDimensions.h);
-    // sk.fill(0, 0, 100, 50);
-    // sk.noStroke();
-    // sk.ellipse(sk.mouseX, sk.mouseY, 50, 50);
+        if (videoDimensions && videoReady) sk.image(animalVideo, videoDimensions.x, videoDimensions.y, videoDimensions.w, videoDimensions.h);
     };
     sk.windowResized = ()=>{
         sk.resizeCanvas(sk.windowWidth, sk.windowHeight);
         if (animalVideo.width) videoDimensions = (0, _utils.calculateVideoDimensions)(sk, animalVideo);
     };
+    sk.keyPressed = ()=>{
+        if (sk.key === "s" || sk.key === "S") (0, _utils.saveSnapshot)(sk, defaultDensity, 2, "sketch");
+    };
+    // Add this to attempt autoplay on any user interaction with the page
+    sk.mousePressed = sk.touchStarted = ()=>{
+        if (!animalVideo.elt.playing) attemptAutoplay();
+    };
 });
 
-},{"p5":"7Uk5U","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../assets/videos/beetle_03.mp4":"gznTn","./utils":"bVlgj"}],"7Uk5U":[function(require,module,exports) {
+},{"p5":"7Uk5U","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./utils":"bVlgj","../assets/videos/beetle_02.mp4":"j8t1S"}],"7Uk5U":[function(require,module,exports) {
 /*! p5.js v1.9.4 May 21, 2024 */ var global = arguments[3];
 !function(e1) {
     module.exports = e1();
@@ -32668,10 +32690,63 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"gznTn":[function(require,module,exports) {
-module.exports = require("40efc48f3b92d70b").getBundleURL("9up4p") + "beetle_03.9cac96b1.mp4" + "?" + Date.now();
+},{}],"bVlgj":[function(require,module,exports) {
+// ---- SAVE P5 CANVAS SNAPSHOT AS PNG
+// -----------------------------------
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "calculateVideoDimensions", ()=>calculateVideoDimensions);
+parcelHelpers.export(exports, "saveSnapshot", ()=>saveSnapshot);
+let countSaved = 1;
+function saveSnapshot(sk, defaultDensity, densityFactor = 2, filename = "sketch") {
+    const currentDensity = sk.pixelDensity();
+    sk.pixelDensity(defaultDensity * densityFactor);
+    sk.redraw();
+    sk.saveCanvas(`${filename}${countSaved}`, "png");
+    countSaved++;
+    sk.pixelDensity(currentDensity);
+    sk.redraw();
+}
+// ---- SINOIDAL PULSE
+// -------------------
+function pulse(sk, min, max, time) {
+    const mid = (min + max) / 2;
+    const amplitude = (max - min) / 2;
+    return amplitude * sk.sin(sk.frameCount * (sk.TWO_PI / time)) + mid;
+}
+// ---- ADJUST VIDEO DIMENSIONS FOR RESPONSIVE FULL SCREEN VIDEO
+// -------------------------------------------------------------
+// USAGE:
+// const videoDimensions = calculateVideoDimensions(sk, myVideo);
+// sk.image(myVideo, videoDimensions.x, videoDimensions.y, videoDimensions.w, videoDimensions.h);
+function calculateVideoDimensions(sk, video) {
+    let canvasRatio = sk.width / sk.height;
+    let videoRatio = video.width / video.height;
+    let x = 0;
+    let y = 0;
+    let w = sk.width;
+    let h = sk.height;
+    if (canvasRatio > videoRatio) {
+        // Canvas is wider than video
+        h = sk.width / videoRatio;
+        y = (sk.height - h) / 2;
+    } else {
+        // Canvas is taller than video
+        w = sk.height * videoRatio;
+        x = (sk.width - w) / 2;
+    }
+    return {
+        x,
+        y,
+        w,
+        h
+    };
+}
 
-},{"40efc48f3b92d70b":"lgJ39"}],"lgJ39":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"j8t1S":[function(require,module,exports) {
+module.exports = require("1bb8d744f3e7f04a").getBundleURL("9up4p") + "beetle_02.a29977c2.mp4" + "?" + Date.now();
+
+},{"1bb8d744f3e7f04a":"lgJ39"}],"lgJ39":[function(require,module,exports) {
 "use strict";
 var bundleURL = {};
 function getBundleURLCached(id) {
@@ -32706,62 +32781,6 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"bVlgj":[function(require,module,exports) {
-// ---- SAVE P5 CANVAS SNAPSHOT AS PNG
-// -----------------------------------
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "calculateVideoDimensions", ()=>calculateVideoDimensions);
-let countSaved = 1;
-function saveSnapshot(densityFactor = 2, filename = "sketch") {
-    sk.keyPressed = ()=>{
-        if (sk.key === "s" || sk.key === "S") {
-            const currentDensity = sk.pixelDensity();
-            sk.pixelDensity(defaultDensity * densityFactor);
-            sk.redraw();
-            sk.saveCanvas(`${filename}${countSaved}`, "png");
-            countSaved++;
-            sk.pixelDensity(currentDensity);
-            sk.redraw();
-        }
-    };
-}
-// ---- SINOIDAL PULSE
-// -------------------
-function pulse(sk1, min, max, time) {
-    const mid = (min + max) / 2;
-    const amplitude = (max - min) / 2;
-    return amplitude * sk1.sin(sk1.frameCount * (sk1.TWO_PI / time)) + mid;
-}
-// ---- ADJUST VIDEO DIMENSIONS FOR RESPONSIVE FULL SCREEN VIDEO
-// -------------------------------------------------------------
-// USAGE:
-// const videoDimensions = calculateVideoDimensions(sk, myVideo);
-// sk.image(myVideo, videoDimensions.x, videoDimensions.y, videoDimensions.w, videoDimensions.h);
-function calculateVideoDimensions(sk1, video) {
-    let canvasRatio = sk1.width / sk1.height;
-    let videoRatio = video.width / video.height;
-    let x = 0;
-    let y = 0;
-    let w = sk1.width;
-    let h = sk1.height;
-    if (canvasRatio > videoRatio) {
-        // Canvas is wider than video
-        h = sk1.width / videoRatio;
-        y = (sk1.height - h) / 2;
-    } else {
-        // Canvas is taller than video
-        w = sk1.height * videoRatio;
-        x = (sk1.width - w) / 2;
-    }
-    return {
-        x,
-        y,
-        w,
-        h
-    };
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["h9Rts","fFaKF"], "fFaKF", "parcelRequire94c2")
+},{}]},["h9Rts","fFaKF"], "fFaKF", "parcelRequire94c2")
 
 //# sourceMappingURL=index.0fbc91cd.js.map

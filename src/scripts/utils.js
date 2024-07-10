@@ -1,18 +1,19 @@
 // ---- SAVE P5 CANVAS SNAPSHOT AS PNG
 // -----------------------------------
 let countSaved = 1;
-function saveSnapshot(densityFactor = 2, filename = "sketch") {
-  sk.keyPressed = () => {
-    if (sk.key === "s" || sk.key === "S") {
-      const currentDensity = sk.pixelDensity();
-      sk.pixelDensity(defaultDensity * densityFactor);
-      sk.redraw();
-      sk.saveCanvas(`${filename}${countSaved}`, "png");
-      countSaved++;
-      sk.pixelDensity(currentDensity);
-      sk.redraw();
-    }
-  };
+function saveSnapshot(
+  sk,
+  defaultDensity,
+  densityFactor = 2,
+  filename = "sketch"
+) {
+  const currentDensity = sk.pixelDensity();
+  sk.pixelDensity(defaultDensity * densityFactor);
+  sk.redraw();
+  sk.saveCanvas(`${filename}${countSaved}`, "png");
+  countSaved++;
+  sk.pixelDensity(currentDensity);
+  sk.redraw();
 }
 
 // ---- SINOIDAL PULSE
@@ -50,4 +51,4 @@ function calculateVideoDimensions(sk, video) {
   return { x, y, w, h };
 }
 
-export { calculateVideoDimensions };
+export { calculateVideoDimensions, saveSnapshot };
