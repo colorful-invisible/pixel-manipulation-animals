@@ -32650,7 +32650,7 @@ function saveSnapshot(densityFactor = 2, filename = "sketch") {
         if (sk.key === "s" || sk.key === "S") {
             const currentDensity = sk.pixelDensity();
             sk.pixelDensity(defaultDensity * densityFactor);
-            sk.redraw(); // Force a redraw at the new density
+            sk.redraw();
             sk.saveCanvas(`${filename}${countSaved}`, "png");
             countSaved++;
             sk.pixelDensity(currentDensity);
