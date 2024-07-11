@@ -22,4 +22,14 @@ canvas {
   top: 0;
   left: 0;
 }
+
+.text {
+  color: #000;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem 0;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 8rem;
+  display: flex;
+}
 /*# sourceMappingURL=index.4ee4707b.css.map */

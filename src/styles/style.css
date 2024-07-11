@@ -22,3 +22,17 @@ canvas {
   left: 0;
   z-index: -1;
 }
+
+.text {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 8rem;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem 0;
+}
+
+.text div {
+  /* background-color: aquamarine; */
+}
