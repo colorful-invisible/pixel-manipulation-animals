@@ -5,10 +5,9 @@ import { calculateVideoDimensions, saveSnapshot } from "./utils";
 new p5((sk) => {
   let animalVideo;
   let videoDimensions;
+  let defaultDensity;
 
   let cellSize = 10;
-
-  let defaultDensity;
 
   sk.preload = () => {
     animalVideo = sk.createVideo(videoURL);
@@ -21,7 +20,6 @@ new p5((sk) => {
     sk.createCanvas(sk.windowWidth, sk.windowHeight);
 
     animalVideo.hide();
-    animalVideo.elt.willReadFrequently = true;
     animalVideo.elt.addEventListener("loadedmetadata", () => {
       videoDimensions = calculateVideoDimensions(sk, animalVideo);
       animalVideo.loop();
@@ -32,7 +30,7 @@ new p5((sk) => {
 
   sk.draw = () => {
     // sk.background("aqua");
-    sk.background(255, 255, 255, 120);
+    sk.background(255, 255, 255, 80);
 
     if (videoDimensions) {
       animalVideo.loadPixels();
@@ -73,7 +71,7 @@ new p5((sk) => {
           sk.push();
           sk.fill(colorFill);
           sk.stroke(colorStroke);
-          sk.ellipse(posX, posY, cellSize - 2, cellSize - 2);
+          sk.ellipse(posX, posY, cellSize, cellSize);
           sk.pop();
         }
       }

@@ -593,8 +593,8 @@ var _utils = require("./utils");
 new (0, _p5Default.default)((sk)=>{
     let animalVideo;
     let videoDimensions;
-    let cellSize = 10;
     let defaultDensity;
+    let cellSize = 10;
     sk.preload = ()=>{
         animalVideo = sk.createVideo((0, _beetle02Mp4Default.default));
         animalVideo.elt.muted = true;
@@ -604,7 +604,6 @@ new (0, _p5Default.default)((sk)=>{
         defaultDensity = sk.displayDensity();
         sk.createCanvas(sk.windowWidth, sk.windowHeight);
         animalVideo.hide();
-        animalVideo.elt.willReadFrequently = true;
         animalVideo.elt.addEventListener("loadedmetadata", ()=>{
             videoDimensions = (0, _utils.calculateVideoDimensions)(sk, animalVideo);
             animalVideo.loop();
@@ -613,7 +612,7 @@ new (0, _p5Default.default)((sk)=>{
     };
     sk.draw = ()=>{
         // sk.background("aqua");
-        sk.background(255, 255, 255, 120);
+        sk.background(255, 255, 255, 80);
         if (videoDimensions) {
             animalVideo.loadPixels();
             for(let y = 0; y < videoDimensions.h; y += cellSize)for(let x = 0; x < videoDimensions.w; x += cellSize){
@@ -645,7 +644,7 @@ new (0, _p5Default.default)((sk)=>{
                 sk.push();
                 sk.fill(colorFill);
                 sk.stroke(colorStroke);
-                sk.ellipse(posX, posY, cellSize - 2, cellSize - 2);
+                sk.ellipse(posX, posY, cellSize, cellSize);
                 sk.pop();
             }
         }
