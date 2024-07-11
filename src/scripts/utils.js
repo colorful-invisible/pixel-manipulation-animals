@@ -16,7 +16,11 @@ function saveSnapshot(sk, defaultDensity, densityFactor = 2) {
 function pulse(sk, min, max, time) {
   const mid = (min + max) / 2;
   const amplitude = (max - min) / 2;
-  return amplitude * sk.sin(sk.frameCount * (sk.TWO_PI / time)) + mid;
+  const period = time * 1000; // Convert time from seconds to milliseconds
+  const currentTime = sk.millis();
+  return (
+    amplitude * sk.sin((currentTime % period) * (sk.TWO_PI / period)) + mid
+  );
 }
 
 // ---- ADJUST VIDEO DIMENSIONS FOR RESPONSIVE FULL SCREEN VIDEO
@@ -46,4 +50,4 @@ function calculateVideoDimensions(sk, video) {
   return { x, y, w, h };
 }
 
-export { calculateVideoDimensions, saveSnapshot };
+export { calculateVideoDimensions, saveSnapshot, pulse };

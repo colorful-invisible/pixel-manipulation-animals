@@ -20,19 +20,22 @@ canvas {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: 5;
+
+  mix-blend-mode: difference;
 }
 
 .text {
+  position: relative;
+  z-index: 1;
   font-family: Helvetica, Arial, sans-serif;
   font-size: 8rem;
-  color: black;
+  text-align: center;
+  color: tomato;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
+  height: 100vh;
   padding: 2rem 0;
-}
-
-.text div {
-  /* background-color: aquamarine; */
 }
