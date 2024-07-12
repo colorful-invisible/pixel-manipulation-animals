@@ -1,5 +1,5 @@
 import p5 from "p5";
-import videoURL from "../assets/videos/lion_02.mp4";
+import videoURL from "../assets/videos/beetle_03.mp4";
 import fontURL from "../assets/fonts/molitor.otf";
 import { calculateVideoDimensions, saveSnapshot, pulse } from "./utils";
 
