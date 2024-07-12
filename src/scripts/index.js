@@ -1,12 +1,14 @@
 import p5 from "p5";
-import videoURL from "../assets/videos/beetle_02.mp4";
+import videoURL from "../assets/videos/beetle_03.mp4";
+import fontURL from "../assets/fonts/molitor.otf";
 import { calculateVideoDimensions, saveSnapshot, pulse } from "./utils";
 
 new p5((sk) => {
   let animalVideo;
   let videoDimensions;
+  let typeface;
   let defaultDensity;
-  let cellSize = 10;
+  let cellSize = 16;
 
   function createEllipsis(x, y, size) {
     return {
@@ -14,7 +16,21 @@ new p5((sk) => {
         sk.push();
         sk.fill(fillColor);
         sk.stroke(strokeColor);
+        sk.strokeWeight(1);
         sk.ellipse(x, y, size * pulseSize, size * pulseSize);
+        sk.pop();
+      },
+    };
+  }
+
+  function createRect(x, y, size) {
+    return {
+      draw: function (fillColor, strokeColor, pulseSize = 1) {
+        sk.push();
+        sk.fill(fillColor);
+        sk.stroke(strokeColor);
+        sk.strokeWeight(2);
+        sk.rect(x, y, size * pulseSize, size * pulseSize);
         sk.pop();
       },
     };
@@ -24,6 +40,8 @@ new p5((sk) => {
     animalVideo = sk.createVideo(videoURL);
     animalVideo.elt.muted = true;
     animalVideo.elt.playsInline = true;
+
+    typeface = sk.loadFont(fontURL);
   };
 
   sk.setup = () => {
@@ -37,10 +55,18 @@ new p5((sk) => {
     });
 
     animalVideo.show = false;
+    sk.textAlign(sk.CENTER, sk.CENTER);
+    sk.textFont(typeface);
   };
 
   sk.draw = () => {
     sk.background(255);
+    // sk.background(27, 160, 131, 80);
+    sk.push();
+    sk.fill("black");
+    sk.textSize(sk.width * 0.02);
+    sk.text("FROM NOTHINGNESS", sk.width / 2, (sk.height / 4) * 3);
+    sk.pop();
 
     if (videoDimensions) {
       animalVideo.loadPixels();
@@ -61,23 +87,68 @@ new p5((sk) => {
           let posX = videoDimensions.x + x + cellSize / 2;
           let posY = videoDimensions.y + y + cellSize / 2;
 
-          let ellipsis = createEllipsis(posX, posY, cellSize);
+          let pixelElement = createRect(posX, posY, cellSize);
+          // let pulseSize = pulse(sk, 0.8, 1, 6);
 
-          if (brightness < 20) {
-            ellipsis.draw(sk.color(0, 0, 0, 0), sk.color(0, 0, 0, 0));
-          } else if (brightness < 120) {
-            // let pulseSize = pulse(sk, 1, 3, 2);
-            ellipsis.draw(sk.color("tomato"), sk.color(0, 0, 0, 255));
-          } else if (brightness < 160) {
-            // let pulseSize = pulse(sk, 1, 2.5, 0.75);
-            ellipsis.draw(sk.color("aquamarine"), sk.color(0, 0, 0, 0));
-          } else {
-            let pulseSize = pulse(sk, 0, 2, 0.5);
-            ellipsis.draw(
-              sk.color("yellow"),
-              sk.color(0, 0, 0, 255),
-              pulseSize
+          if (brightness < 10) {
+            pixelElement.draw(
+              sk.color(0, 0, 0, 0),
+              sk.color(0, 0, 0, 0)
+              // pulseSize
             );
+          } else if (brightness < 90) {
+            pixelElement.draw(
+              sk.color(27, 160, 131),
+              sk.color("black")
+              // pulseSize
+            );
+            sk.push();
+            sk.noStroke();
+            sk.fill(0, 0, 0, 200);
+            sk.triangle(
+              posX + cellSize,
+              posY,
+              posX + cellSize,
+              posY + cellSize,
+              posX,
+              posY + cellSize
+            );
+            sk.pop();
+          } else if (brightness < 125) {
+            pixelElement.draw(
+              sk.color(24, 121, 153),
+              sk.color("black")
+              // pulseSize
+            );
+            sk.push();
+            sk.noStroke();
+            sk.fill(0, 0, 0, 200);
+            sk.triangle(
+              posX + cellSize,
+              posY,
+              posX + cellSize,
+              posY + cellSize,
+              posX,
+              posY + cellSize
+            );
+            sk.pop();
+          } else if (brightness < 160) {
+            pixelElement.draw(
+              sk.color(245, 89, 9),
+              sk.color("black")
+              // pulseSize
+            );
+          } else {
+            pixelElement.draw(
+              sk.color(247, 217, 0),
+              sk.color("black")
+              // pulseSize
+            );
+            sk.push();
+            sk.noStroke();
+            sk.fill(0);
+            sk.ellipse(posX + cellSize / 2, posY + cellSize / 2, 4, 4);
+            sk.pop();
           }
         }
       }

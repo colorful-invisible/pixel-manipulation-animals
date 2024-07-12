@@ -587,29 +587,46 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _p5 = require("p5");
 var _p5Default = parcelHelpers.interopDefault(_p5);
-var _beetle02Mp4 = require("../assets/videos/beetle_02.mp4");
-var _beetle02Mp4Default = parcelHelpers.interopDefault(_beetle02Mp4);
+var _beetle03Mp4 = require("../assets/videos/beetle_03.mp4");
+var _beetle03Mp4Default = parcelHelpers.interopDefault(_beetle03Mp4);
+var _molitorOtf = require("../assets/fonts/molitor.otf");
+var _molitorOtfDefault = parcelHelpers.interopDefault(_molitorOtf);
 var _utils = require("./utils");
 new (0, _p5Default.default)((sk)=>{
     let animalVideo;
     let videoDimensions;
+    let typeface;
     let defaultDensity;
-    let cellSize = 10;
+    let cellSize = 16;
     function createEllipsis(x, y, size) {
         return {
             draw: function(fillColor, strokeColor, pulseSize = 1) {
                 sk.push();
                 sk.fill(fillColor);
                 sk.stroke(strokeColor);
+                sk.strokeWeight(1);
                 sk.ellipse(x, y, size * pulseSize, size * pulseSize);
                 sk.pop();
             }
         };
     }
+    function createRect(x, y, size) {
+        return {
+            draw: function(fillColor, strokeColor, pulseSize = 1) {
+                sk.push();
+                sk.fill(fillColor);
+                sk.stroke(strokeColor);
+                sk.strokeWeight(2);
+                sk.rect(x, y, size * pulseSize, size * pulseSize);
+                sk.pop();
+            }
+        };
+    }
     sk.preload = ()=>{
-        animalVideo = sk.createVideo((0, _beetle02Mp4Default.default));
+        animalVideo = sk.createVideo((0, _beetle03Mp4Default.default));
         animalVideo.elt.muted = true;
         animalVideo.elt.playsInline = true;
+        typeface = sk.loadFont((0, _molitorOtfDefault.default));
     };
     sk.setup = ()=>{
         defaultDensity = sk.displayDensity();
@@ -620,9 +637,17 @@ new (0, _p5Default.default)((sk)=>{
             animalVideo.loop();
         });
         animalVideo.show = false;
+        sk.textAlign(sk.CENTER, sk.CENTER);
+        sk.textFont(typeface);
     };
     sk.draw = ()=>{
         sk.background(255);
+        // sk.background(27, 160, 131, 80);
+        sk.push();
+        sk.fill("black");
+        sk.textSize(sk.width * 0.02);
+        sk.text("FROM NOTHINGNESS", sk.width / 2, sk.height / 4 * 3);
+        sk.pop();
         if (videoDimensions) {
             animalVideo.loadPixels();
             for(let y = 0; y < videoDimensions.h; y += cellSize)for(let x = 0; x < videoDimensions.w; x += cellSize){
@@ -632,15 +657,31 @@ new (0, _p5Default.default)((sk)=>{
                 let brightness = (animalVideo.pixels[index] + animalVideo.pixels[index + 1] + animalVideo.pixels[index + 2]) / 3;
                 let posX = videoDimensions.x + x + cellSize / 2;
                 let posY = videoDimensions.y + y + cellSize / 2;
-                let ellipsis = createEllipsis(posX, posY, cellSize);
-                if (brightness < 20) ellipsis.draw(sk.color(0, 0, 0, 0), sk.color(0, 0, 0, 0));
-                else if (brightness < 120) // let pulseSize = pulse(sk, 1, 3, 2);
-                ellipsis.draw(sk.color("tomato"), sk.color(0, 0, 0, 255));
-                else if (brightness < 160) // let pulseSize = pulse(sk, 1, 2.5, 0.75);
-                ellipsis.draw(sk.color("aquamarine"), sk.color(0, 0, 0, 0));
+                let pixelElement = createRect(posX, posY, cellSize);
+                // let pulseSize = pulse(sk, 0.8, 1, 6);
+                if (brightness < 10) pixelElement.draw(sk.color(0, 0, 0, 0), sk.color(0, 0, 0, 0));
+                else if (brightness < 90) {
+                    pixelElement.draw(sk.color(27, 160, 131), sk.color("black"));
+                    sk.push();
+                    sk.noStroke();
+                    sk.fill(0, 0, 0, 200);
+                    sk.triangle(posX + cellSize, posY, posX + cellSize, posY + cellSize, posX, posY + cellSize);
+                    sk.pop();
+                } else if (brightness < 125) {
+                    pixelElement.draw(sk.color(24, 121, 153), sk.color("black"));
+                    sk.push();
+                    sk.noStroke();
+                    sk.fill(0, 0, 0, 200);
+                    sk.triangle(posX + cellSize, posY, posX + cellSize, posY + cellSize, posX, posY + cellSize);
+                    sk.pop();
+                } else if (brightness < 160) pixelElement.draw(sk.color(245, 89, 9), sk.color("black"));
                 else {
-                    let pulseSize = (0, _utils.pulse)(sk, 0, 2, 0.5);
-                    ellipsis.draw(sk.color("yellow"), sk.color(0, 0, 0, 255), pulseSize);
+                    pixelElement.draw(sk.color(247, 217, 0), sk.color("black"));
+                    sk.push();
+                    sk.noStroke();
+                    sk.fill(0);
+                    sk.ellipse(posX + cellSize / 2, posY + cellSize / 2, 4, 4);
+                    sk.pop();
                 }
             }
         }
@@ -656,7 +697,7 @@ new (0, _p5Default.default)((sk)=>{
     };
 });
 
-},{"p5":"7Uk5U","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./utils":"bVlgj","../assets/videos/beetle_02.mp4":"j8t1S"}],"7Uk5U":[function(require,module,exports) {
+},{"p5":"7Uk5U","./utils":"bVlgj","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../assets/videos/beetle_03.mp4":"gznTn","../assets/fonts/molitor.otf":"1s3Vq"}],"7Uk5U":[function(require,module,exports) {
 /*! p5.js v1.9.4 May 21, 2024 */ var global = arguments[3];
 !function(e1) {
     module.exports = e1();
@@ -32677,36 +32718,6 @@ new (0, _p5Default.default)((sk)=>{
     ])(264);
 });
 
-},{}],"gkKU3":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || Object.prototype.hasOwnProperty.call(dest, key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
 },{}],"bVlgj":[function(require,module,exports) {
 // ---- SAVE P5 CANVAS SNAPSHOT AS PNG
 // -----------------------------------
@@ -32763,10 +32774,40 @@ function calculateVideoDimensions(sk, video) {
     };
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"j8t1S":[function(require,module,exports) {
-module.exports = require("1bb8d744f3e7f04a").getBundleURL("9up4p") + "beetle_02.a29977c2.mp4" + "?" + Date.now();
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || Object.prototype.hasOwnProperty.call(dest, key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
 
-},{"1bb8d744f3e7f04a":"lgJ39"}],"lgJ39":[function(require,module,exports) {
+},{}],"gznTn":[function(require,module,exports) {
+module.exports = require("40efc48f3b92d70b").getBundleURL("9up4p") + "beetle_03.9cac96b1.mp4" + "?" + Date.now();
+
+},{"40efc48f3b92d70b":"lgJ39"}],"lgJ39":[function(require,module,exports) {
 "use strict";
 var bundleURL = {};
 function getBundleURLCached(id) {
@@ -32801,6 +32842,9 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}]},["h9Rts","fFaKF"], "fFaKF", "parcelRequire94c2")
+},{}],"1s3Vq":[function(require,module,exports) {
+module.exports = require("ca0459240095ac8f").getBundleURL("9up4p") + "molitor.85c68d02.otf" + "?" + Date.now();
+
+},{"ca0459240095ac8f":"lgJ39"}]},["h9Rts","fFaKF"], "fFaKF", "parcelRequire94c2")
 
 //# sourceMappingURL=index.0fbc91cd.js.map

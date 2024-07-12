@@ -1,7 +1,7 @@
 {
   "extends": "@parcel/config-default",
   "transformers": {
-    "*.{mp4,webm}": [
+    "*.{mp4,webm,otf}": [
       "@parcel/transformer-raw"
     ]
   }
