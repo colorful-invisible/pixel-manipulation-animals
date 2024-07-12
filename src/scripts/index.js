@@ -62,11 +62,6 @@ new p5((sk) => {
   sk.draw = () => {
     sk.background(255);
     // sk.background(27, 160, 131, 80);
-    sk.push();
-    sk.fill("black");
-    sk.textSize(sk.width * 0.02);
-    sk.text("FROM NOTHINGNESS", sk.width / 2, (sk.height / 4) * 3);
-    sk.pop();
 
     if (videoDimensions) {
       animalVideo.loadPixels();
@@ -153,6 +148,13 @@ new p5((sk) => {
         }
       }
     }
+
+    sk.push();
+    // sk.blendMode(sk.DIFFERENCE);
+    sk.fill("black");
+    sk.textSize(sk.width * 0.04);
+    sk.text("FROM NOTHINGNESS", sk.width / 2, (sk.height / 4) * 3);
+    sk.pop();
 
     if (animalVideo.show) {
       sk.image(

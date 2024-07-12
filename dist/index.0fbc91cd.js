@@ -643,11 +643,6 @@ new (0, _p5Default.default)((sk)=>{
     sk.draw = ()=>{
         sk.background(255);
         // sk.background(27, 160, 131, 80);
-        sk.push();
-        sk.fill("black");
-        sk.textSize(sk.width * 0.02);
-        sk.text("FROM NOTHINGNESS", sk.width / 2, sk.height / 4 * 3);
-        sk.pop();
         if (videoDimensions) {
             animalVideo.loadPixels();
             for(let y = 0; y < videoDimensions.h; y += cellSize)for(let x = 0; x < videoDimensions.w; x += cellSize){
@@ -685,6 +680,12 @@ new (0, _p5Default.default)((sk)=>{
                 }
             }
         }
+        sk.push();
+        // sk.blendMode(sk.DIFFERENCE);
+        sk.fill("black");
+        sk.textSize(sk.width * 0.04);
+        sk.text("FROM NOTHINGNESS", sk.width / 2, sk.height / 4 * 3);
+        sk.pop();
         if (animalVideo.show) sk.image(animalVideo, videoDimensions.x, videoDimensions.y, videoDimensions.w, videoDimensions.h);
     };
     sk.windowResized = ()=>{
