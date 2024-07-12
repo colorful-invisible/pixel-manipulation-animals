@@ -60,8 +60,8 @@ new p5((sk) => {
   };
 
   sk.draw = () => {
-    sk.background(255);
-    // sk.background(27, 160, 131, 80);
+    // sk.background(255);
+    sk.background(247, 217, 0);
 
     if (videoDimensions) {
       animalVideo.loadPixels();
@@ -99,7 +99,7 @@ new p5((sk) => {
             );
             sk.push();
             sk.noStroke();
-            sk.fill(0, 0, 0, 200);
+            sk.fill(0, 0, 0, 180);
             sk.triangle(
               posX + cellSize,
               posY,
@@ -117,7 +117,7 @@ new p5((sk) => {
             );
             sk.push();
             sk.noStroke();
-            sk.fill(0, 0, 0, 200);
+            sk.fill(0, 0, 0, 180);
             sk.triangle(
               posX + cellSize,
               posY,

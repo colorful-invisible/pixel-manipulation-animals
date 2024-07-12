@@ -18,24 +18,8 @@ main {
 
 canvas {
   z-index: 5;
-  mix-blend-mode: difference;
   position: absolute;
   top: 0;
   left: 0;
-}
-
-.text {
-  z-index: 1;
-  text-align: center;
-  color: tomato;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  height: 100vh;
-  padding: 2rem 0;
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 8rem;
-  display: flex;
-  position: relative;
 }
 /*# sourceMappingURL=index.4ee4707b.css.map */
