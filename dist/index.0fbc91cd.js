@@ -587,16 +587,17 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _p5 = require("p5");
 var _p5Default = parcelHelpers.interopDefault(_p5);
-var _beetle03Mp4 = require("../assets/videos/beetle_03.mp4");
-var _beetle03Mp4Default = parcelHelpers.interopDefault(_beetle03Mp4);
-var _molitorOtf = require("../assets/fonts/molitor.otf");
-var _molitorOtfDefault = parcelHelpers.interopDefault(_molitorOtf);
+var _nefertitiMp4 = require("../assets/videos/nefertiti.mp4");
+var _nefertitiMp4Default = parcelHelpers.interopDefault(_nefertitiMp4);
+var _monaspaceNeonOtf = require("../assets/fonts/monaspace-neon.otf");
+var _monaspaceNeonOtfDefault = parcelHelpers.interopDefault(_monaspaceNeonOtf);
 var _utils = require("./utils");
 // TO DO: REDUCE PROCESSING OF DARK PIXELS AVOIDING THEM TO BE IN THE ARRAY.
 new (0, _p5Default.default)((sk)=>{
     let animalVideo;
     let videoDimensions;
     let typeface;
+    let fontsize = 32;
     let defaultDensity;
     let cellSize = 16;
     let pixels = [];
@@ -642,10 +643,10 @@ new (0, _p5Default.default)((sk)=>{
         }
     }
     sk.preload = ()=>{
-        animalVideo = sk.createVideo((0, _beetle03Mp4Default.default));
+        animalVideo = sk.createVideo((0, _nefertitiMp4Default.default));
         animalVideo.elt.muted = true;
         animalVideo.elt.playsInline = true;
-        typeface = sk.loadFont((0, _molitorOtfDefault.default));
+        typeface = sk.loadFont((0, _monaspaceNeonOtfDefault.default));
     };
     sk.setup = ()=>{
         defaultDensity = sk.displayDensity();
@@ -674,7 +675,14 @@ new (0, _p5Default.default)((sk)=>{
         }
     }
     sk.draw = ()=>{
-        sk.background(247, 217, 0);
+        sk.background(255);
+        sk.push();
+        sk.fill("black");
+        sk.textSize(24);
+        // sk.textSize(sk.width * 0.02);
+        sk.textAlign(sk.CENTER, sk.CENTER);
+        sk.text("EVERYWHERE IS JUST ONE PLACE", sk.width / 2, sk.height / 2);
+        sk.pop();
         console.log(pixels.length);
         if (videoDimensions) {
             animalVideo.loadPixels();
@@ -698,11 +706,6 @@ new (0, _p5Default.default)((sk)=>{
                 }
             });
         }
-        // sk.push();
-        // sk.fill("black");
-        // sk.textSize(sk.width * 0.04);
-        // sk.text("FROM NOTHINGNESS", sk.width / 2, (sk.height / 4) * 3);
-        // sk.pop();
         if (animalVideo.show) sk.image(animalVideo, videoDimensions.x, videoDimensions.y, videoDimensions.w, videoDimensions.h);
     };
     function drawTriangle(pixel, color) {
@@ -732,7 +735,7 @@ new (0, _p5Default.default)((sk)=>{
     };
 });
 
-},{"p5":"7Uk5U","../assets/fonts/molitor.otf":"1s3Vq","./utils":"bVlgj","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../assets/videos/beetle_03.mp4":"gznTn"}],"7Uk5U":[function(require,module,exports) {
+},{"p5":"7Uk5U","./utils":"bVlgj","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../assets/videos/nefertiti.mp4":"7QhSB","../assets/fonts/monaspace-neon.otf":"30Rpk"}],"7Uk5U":[function(require,module,exports) {
 /*! p5.js v1.9.4 May 21, 2024 */ var global = arguments[3];
 !function(e1) {
     module.exports = e1();
@@ -32753,44 +32756,6 @@ new (0, _p5Default.default)((sk)=>{
     ])(264);
 });
 
-},{}],"1s3Vq":[function(require,module,exports) {
-module.exports = require("ca0459240095ac8f").getBundleURL("9up4p") + "molitor.85c68d02.otf" + "?" + Date.now();
-
-},{"ca0459240095ac8f":"lgJ39"}],"lgJ39":[function(require,module,exports) {
-"use strict";
-var bundleURL = {};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
-    }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
-    }
-    return "/";
-}
-function getBaseURL(url) {
-    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
-}
-// TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
-    if (!matches) throw new Error("Origin not found");
-    return matches[0];
-}
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
-
 },{}],"bVlgj":[function(require,module,exports) {
 // ---- SAVE P5 CANVAS SNAPSHOT AS PNG
 // -----------------------------------
@@ -32877,9 +32842,47 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"gznTn":[function(require,module,exports) {
-module.exports = require("40efc48f3b92d70b").getBundleURL("9up4p") + "beetle_03.9cac96b1.mp4" + "?" + Date.now();
+},{}],"7QhSB":[function(require,module,exports) {
+module.exports = require("26f28f44b018a4b7").getBundleURL("9up4p") + "nefertiti.e4a26b65.mp4" + "?" + Date.now();
 
-},{"40efc48f3b92d70b":"lgJ39"}]},["h9Rts","fFaKF"], "fFaKF", "parcelRequire94c2")
+},{"26f28f44b018a4b7":"lgJ39"}],"lgJ39":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return "/";
+}
+function getBaseURL(url) {
+    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
+}
+// TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
+    if (!matches) throw new Error("Origin not found");
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
+
+},{}],"30Rpk":[function(require,module,exports) {
+module.exports = require("21542a7f6a7d708f").getBundleURL("9up4p") + "monaspace-neon.648c6124.otf" + "?" + Date.now();
+
+},{"21542a7f6a7d708f":"lgJ39"}]},["h9Rts","fFaKF"], "fFaKF", "parcelRequire94c2")
 
 //# sourceMappingURL=index.0fbc91cd.js.map

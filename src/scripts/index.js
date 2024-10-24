@@ -1,13 +1,14 @@
 import p5 from "p5";
-import videoURL from "../assets/videos/beetle_03.mp4";
-import fontURL from "../assets/fonts/molitor.otf";
-import { calculateVideoDimensions, saveSnapshot, pulse } from "./utils";
+import videoURL from "../assets/videos/nefertiti.mp4";
+import fontURL from "../assets/fonts/monaspace-neon.otf";
+import { calculateVideoDimensions, saveSnapshot } from "./utils";
 
 // TO DO: REDUCE PROCESSING OF DARK PIXELS AVOIDING THEM TO BE IN THE ARRAY.
 new p5((sk) => {
   let animalVideo;
   let videoDimensions;
   let typeface;
+  let fontsize = 32;
   let defaultDensity;
   let cellSize = 16;
   let pixels = [];
@@ -106,7 +107,16 @@ new p5((sk) => {
   }
 
   sk.draw = () => {
-    sk.background(247, 217, 0);
+    sk.background(255);
+
+    sk.push();
+    sk.fill("black");
+    sk.textSize(24);
+    // sk.textSize(sk.width * 0.02);
+    sk.textAlign(sk.CENTER, sk.CENTER);
+    sk.text("EVERYWHERE IS JUST ONE PLACE", sk.width / 2, sk.height / 2);
+
+    sk.pop();
 
     console.log(pixels.length);
 
@@ -155,12 +165,6 @@ new p5((sk) => {
         }
       });
     }
-
-    // sk.push();
-    // sk.fill("black");
-    // sk.textSize(sk.width * 0.04);
-    // sk.text("FROM NOTHINGNESS", sk.width / 2, (sk.height / 4) * 3);
-    // sk.pop();
 
     if (animalVideo.show) {
       sk.image(
