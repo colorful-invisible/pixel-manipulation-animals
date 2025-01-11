@@ -142,14 +142,14 @@
       this[globalName] = mainExports;
     }
   }
-})({"h9Rts":[function(require,module,exports) {
+})({"8R7Qh":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
 var HMR_USE_SSE = false;
-module.bundle.HMR_BUNDLE_ID = "6e8a5cd20fbc91cd";
+module.bundle.HMR_BUNDLE_ID = "8a32783bf6c35b95";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, HMR_USE_SSE, chrome, browser, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -583,74 +583,91 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
     });
 }
 
-},{}],"fFaKF":[function(require,module,exports) {
+},{}],"kCYYj":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _p5 = require("p5");
 var _p5Default = parcelHelpers.interopDefault(_p5);
-var _jupiter01Mp4 = require("../assets/videos/jupiter_01.mp4");
-var _jupiter01Mp4Default = parcelHelpers.interopDefault(_jupiter01Mp4);
-var _monaspaceNeonOtf = require("../assets/fonts/monaspace-neon.otf");
-var _monaspaceNeonOtfDefault = parcelHelpers.interopDefault(_monaspaceNeonOtf);
+var _beetle03Mp4 = require("../assets/videos/beetle_03.mp4");
+var _beetle03Mp4Default = parcelHelpers.interopDefault(_beetle03Mp4);
+var _molitorOtf = require("../assets/fonts/molitor.otf");
+var _molitorOtfDefault = parcelHelpers.interopDefault(_molitorOtf);
 var _utils = require("./utils");
 // TO DO: REDUCE PROCESSING OF DARK PIXELS AVOIDING THEM TO BE IN THE ARRAY.
 new (0, _p5Default.default)((sk)=>{
     let animalVideo;
     let videoDimensions;
     let typeface;
-    let fontsize = 32;
     let defaultDensity;
     let cellSize = 16;
     let pixels = [];
-    let repulsionRadius = 60;
-    let maxRepulsion = 240;
-    // Factory function for creating Pixel objects
-    function createPixel(x, y, size) {
-        let originalX = x;
-        let originalY = y;
-        let velocity = {
-            x: 0,
-            y: 0
-        };
-        return {
-            x,
-            y,
-            size,
-            originalX,
-            originalY,
-            velocity,
-            draw (fillColor, strokeColor) {
-                sk.push();
-                sk.fill(fillColor);
-                sk.stroke(strokeColor);
-                sk.strokeWeight(2);
-                sk.rect(this.x, this.y, this.size, this.size);
-                sk.pop();
-            },
-            repulse (mouseX, mouseY) {
-                let dx = this.x - mouseX;
-                let dy = this.y - mouseY;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < repulsionRadius) {
-                    let normalizedDistance = distance / repulsionRadius;
-                    let force = Math.pow(1 - normalizedDistance, 2) * maxRepulsion;
-                    this.velocity.x += dx / distance * force;
-                    this.velocity.y += dy / distance * force;
-                }
-                this.x += this.velocity.x;
-                this.y += this.velocity.y;
-                this.velocity.x *= 0.9;
-                this.velocity.y *= 0.9;
-                let returnForce = 0.05;
-                this.x += (this.originalX - this.x) * returnForce;
-                this.y += (this.originalY - this.y) * returnForce;
+    let repulsionRadius = 80;
+    let maxRepulsion = 100;
+    class Pixel {
+        constructor(x, y, size){
+            this.x = x;
+            this.y = y;
+            this.originalX = x;
+            this.originalY = y;
+            this.size = size;
+            this.velocity = {
+                x: 0,
+                y: 0
+            };
+        }
+        draw(fillColor, strokeColor) {
+            sk.push();
+            sk.fill(fillColor);
+            sk.stroke(strokeColor);
+            sk.strokeWeight(2);
+            sk.rect(this.x, this.y, this.size, this.size);
+            sk.pop();
+        }
+        repulse(mouseX, mouseY) {
+            let dx = this.x - mouseX;
+            let dy = this.y - mouseY;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < repulsionRadius) {
+                // Calculate force based on distance (stronger near center)
+                let normalizedDistance = distance / repulsionRadius;
+                let force = Math.pow(1 - normalizedDistance, 2) * maxRepulsion;
+                // Apply force
+                this.velocity.x += dx / distance * force;
+                this.velocity.y += dy / distance * force;
             }
-        };
+            // Apply velocity with a maximum speed limit
+            let speed = Math.sqrt(this.velocity.x ** 2 + this.velocity.y ** 2);
+            let maxSpeed = 200; // Increased for more dynamic movement
+            if (speed > maxSpeed) {
+                this.velocity.x = this.velocity.x / speed * maxSpeed;
+                this.velocity.y = this.velocity.y / speed * maxSpeed;
+            }
+            this.x += this.velocity.x;
+            this.y += this.velocity.y;
+            // Apply friction (reduced for more fluid motion)
+            this.velocity.x *= 0.92;
+            this.velocity.y *= 0.92;
+            // Return to original position with easing
+            let returnForce = 0.05; // Reduced for softer return
+            let dx2 = this.originalX - this.x;
+            let dy2 = this.originalY - this.y;
+            this.velocity.x += dx2 * returnForce;
+            this.velocity.y += dy2 * returnForce;
+            // Stop very small movements to prevent jittering
+            if (Math.abs(this.velocity.x) < 0.01) this.velocity.x = 0;
+            if (Math.abs(this.velocity.y) < 0.01) this.velocity.y = 0;
+            if (Math.abs(dx2) < 0.1 && Math.abs(dy2) < 0.1) {
+                this.x = this.originalX;
+                this.y = this.originalY;
+                this.velocity.x = 0;
+                this.velocity.y = 0;
+            }
+        }
     }
     sk.preload = ()=>{
-        animalVideo = sk.createVideo((0, _jupiter01Mp4Default.default));
+        animalVideo = sk.createVideo((0, _beetle03Mp4Default.default));
         animalVideo.elt.muted = true;
         animalVideo.elt.playsInline = true;
-        typeface = sk.loadFont((0, _monaspaceNeonOtfDefault.default));
+        typeface = sk.loadFont((0, _molitorOtfDefault.default));
     };
     sk.setup = ()=>{
         defaultDensity = sk.displayDensity();
@@ -675,17 +692,11 @@ new (0, _p5Default.default)((sk)=>{
             let brightness = (animalVideo.pixels[pixelIndex] + animalVideo.pixels[pixelIndex + 1] + animalVideo.pixels[pixelIndex + 2]) / 3;
             let posX = videoDimensions.x + x;
             let posY = videoDimensions.y + y;
-            pixels.push(createPixel(posX, posY, cellSize, brightness));
+            pixels.push(new Pixel(posX, posY, cellSize));
         }
     }
     sk.draw = ()=>{
-        sk.background(255);
-        sk.push();
-        sk.fill("black");
-        sk.textSize(24);
-        sk.textAlign(sk.CENTER, sk.CENTER);
-        sk.text("EVERYWHERE IS JUST ONE PLACE", sk.width / 2, sk.height / 2);
-        sk.pop();
+        sk.background(247, 217, 0);
         if (videoDimensions) {
             animalVideo.loadPixels();
             pixels.forEach((pixel)=>{
@@ -708,6 +719,11 @@ new (0, _p5Default.default)((sk)=>{
                 }
             });
         }
+        sk.push();
+        sk.fill("black");
+        sk.textSize(sk.width * 0.04);
+        sk.text("FROM NOTHINGNESS", sk.width / 2, sk.height / 4 * 3);
+        sk.pop();
         if (animalVideo.show) sk.image(animalVideo, videoDimensions.x, videoDimensions.y, videoDimensions.w, videoDimensions.h);
     };
     function drawTriangle(pixel, color) {
@@ -737,7 +753,7 @@ new (0, _p5Default.default)((sk)=>{
     };
 });
 
-},{"p5":"7Uk5U","../assets/fonts/monaspace-neon.otf":"30Rpk","./utils":"bVlgj","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../assets/videos/jupiter_01.mp4":"frfGI"}],"7Uk5U":[function(require,module,exports) {
+},{"p5":"7Uk5U","../assets/videos/beetle_03.mp4":"b7u8r","../assets/fonts/molitor.otf":"bn05G","./utils":"bVlgj","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7Uk5U":[function(require,module,exports) {
 /*! p5.js v1.9.4 May 21, 2024 */ var global = arguments[3];
 !function(e1) {
     module.exports = e1();
@@ -32758,10 +32774,10 @@ new (0, _p5Default.default)((sk)=>{
     ])(264);
 });
 
-},{}],"30Rpk":[function(require,module,exports) {
-module.exports = require("21542a7f6a7d708f").getBundleURL("9up4p") + "monaspace-neon.648c6124.otf" + "?" + Date.now();
+},{}],"b7u8r":[function(require,module,exports) {
+module.exports = require("5218bdc134065d7").getBundleURL("bRCrW") + "beetle_03.9cac96b1.mp4" + "?" + Date.now();
 
-},{"21542a7f6a7d708f":"lgJ39"}],"lgJ39":[function(require,module,exports) {
+},{"5218bdc134065d7":"lgJ39"}],"lgJ39":[function(require,module,exports) {
 "use strict";
 var bundleURL = {};
 function getBundleURLCached(id) {
@@ -32796,7 +32812,10 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"bVlgj":[function(require,module,exports) {
+},{}],"bn05G":[function(require,module,exports) {
+module.exports = require("540961832ae2cfa7").getBundleURL("bRCrW") + "molitor.85c68d02.otf" + "?" + Date.now();
+
+},{"540961832ae2cfa7":"lgJ39"}],"bVlgj":[function(require,module,exports) {
 // ---- SAVE P5 CANVAS SNAPSHOT AS PNG
 // -----------------------------------
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -32882,9 +32901,6 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"frfGI":[function(require,module,exports) {
-module.exports = require("43c7521f9ca431cd").getBundleURL("9up4p") + "jupiter_01.5b6a3cf8.mp4" + "?" + Date.now();
+},{}]},["8R7Qh","kCYYj"], "kCYYj", "parcelRequire94c2")
 
-},{"43c7521f9ca431cd":"lgJ39"}]},["h9Rts","fFaKF"], "fFaKF", "parcelRequire94c2")
-
-//# sourceMappingURL=index.0fbc91cd.js.map
+//# sourceMappingURL=index.f6c35b95.js.map

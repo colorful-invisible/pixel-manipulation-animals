@@ -13,7 +13,7 @@ new p5((sk) => {
   let cellSize = 16;
   let pixels = [];
   let repulsionRadius = 60;
-  let maxRepulsion = 240;
+  let maxRepulsion = 180;
 
   // Factory function for creating Pixel objects
   function createPixel(x, y, size) {

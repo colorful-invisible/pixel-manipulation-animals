@@ -13,53 +13,50 @@ new p5((sk) => {
   let cellSize = 16;
   let pixels = [];
   let repulsionRadius = 60;
-  let maxRepulsion = 240;
+  let maxRepulsion = 180;
 
-  // Factory function for creating Pixel objects
-  function createPixel(x, y, size) {
-    let originalX = x;
-    let originalY = y;
-    let velocity = { x: 0, y: 0 };
+  class Pixel {
+    constructor(x, y, size) {
+      this.x = x;
+      this.y = y;
+      this.originalX = x;
+      this.originalY = y;
+      this.size = size;
+      this.velocity = { x: 0, y: 0 };
+    }
 
-    return {
-      x,
-      y,
-      size,
-      originalX,
-      originalY,
-      velocity,
-      draw(fillColor, strokeColor) {
-        sk.push();
-        sk.fill(fillColor);
-        sk.stroke(strokeColor);
-        sk.strokeWeight(2);
-        sk.rect(this.x, this.y, this.size, this.size);
-        sk.pop();
-      },
-      repulse(mouseX, mouseY) {
-        let dx = this.x - mouseX;
-        let dy = this.y - mouseY;
-        let distance = Math.sqrt(dx * dx + dy * dy);
+    draw(fillColor, strokeColor) {
+      sk.push();
+      sk.fill(fillColor);
+      sk.stroke(strokeColor);
+      sk.strokeWeight(2);
+      sk.rect(this.x, this.y, this.size, this.size);
+      sk.pop();
+    }
 
-        if (distance < repulsionRadius) {
-          let normalizedDistance = distance / repulsionRadius;
-          let force = Math.pow(1 - normalizedDistance, 2) * maxRepulsion;
+    repulse(mouseX, mouseY) {
+      let dx = this.x - mouseX;
+      let dy = this.y - mouseY;
+      let distance = Math.sqrt(dx * dx + dy * dy);
 
-          this.velocity.x += (dx / distance) * force;
-          this.velocity.y += (dy / distance) * force;
-        }
+      if (distance < repulsionRadius) {
+        let normalizedDistance = distance / repulsionRadius;
+        let force = Math.pow(1 - normalizedDistance, 2) * maxRepulsion;
 
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
+        this.velocity.x += (dx / distance) * force;
+        this.velocity.y += (dy / distance) * force;
+      }
 
-        this.velocity.x *= 0.9;
-        this.velocity.y *= 0.9;
+      this.x += this.velocity.x;
+      this.y += this.velocity.y;
 
-        let returnForce = 0.05;
-        this.x += (this.originalX - this.x) * returnForce;
-        this.y += (this.originalY - this.y) * returnForce;
-      },
-    };
+      this.velocity.x *= 0.9;
+      this.velocity.y *= 0.9;
+
+      let returnForce = 0.05;
+      this.x += (this.originalX - this.x) * returnForce;
+      this.y += (this.originalY - this.y) * returnForce;
+    }
   }
 
   sk.preload = () => {
@@ -104,7 +101,7 @@ new p5((sk) => {
 
         let posX = videoDimensions.x + x;
         let posY = videoDimensions.y + y;
-        pixels.push(createPixel(posX, posY, cellSize, brightness));
+        pixels.push(new Pixel(posX, posY, cellSize, brightness));
       }
     }
   }
@@ -115,9 +112,13 @@ new p5((sk) => {
     sk.push();
     sk.fill("black");
     sk.textSize(24);
+    // sk.textSize(sk.width * 0.02);
     sk.textAlign(sk.CENTER, sk.CENTER);
     sk.text("EVERYWHERE IS JUST ONE PLACE", sk.width / 2, sk.height / 2);
+
     sk.pop();
+
+    console.log(pixels.length);
 
     if (videoDimensions) {
       animalVideo.loadPixels();

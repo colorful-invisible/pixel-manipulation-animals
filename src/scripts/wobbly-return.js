@@ -1,65 +1,85 @@
 import p5 from "p5";
-import videoURL from "../assets/videos/jupiter_01.mp4";
-import fontURL from "../assets/fonts/monaspace-neon.otf";
-import { calculateVideoDimensions, saveSnapshot } from "./utils";
+import videoURL from "../assets/videos/beetle_03.mp4";
+import fontURL from "../assets/fonts/molitor.otf";
+import { calculateVideoDimensions, saveSnapshot, pulse } from "./utils";
 
 // TO DO: REDUCE PROCESSING OF DARK PIXELS AVOIDING THEM TO BE IN THE ARRAY.
 new p5((sk) => {
   let animalVideo;
   let videoDimensions;
   let typeface;
-  let fontsize = 32;
   let defaultDensity;
   let cellSize = 16;
   let pixels = [];
-  let repulsionRadius = 60;
-  let maxRepulsion = 240;
+  let repulsionRadius = 80;
+  let maxRepulsion = 100;
 
-  // Factory function for creating Pixel objects
-  function createPixel(x, y, size) {
-    let originalX = x;
-    let originalY = y;
-    let velocity = { x: 0, y: 0 };
+  class Pixel {
+    constructor(x, y, size) {
+      this.x = x;
+      this.y = y;
+      this.originalX = x;
+      this.originalY = y;
+      this.size = size;
+      this.velocity = { x: 0, y: 0 };
+    }
 
-    return {
-      x,
-      y,
-      size,
-      originalX,
-      originalY,
-      velocity,
-      draw(fillColor, strokeColor) {
-        sk.push();
-        sk.fill(fillColor);
-        sk.stroke(strokeColor);
-        sk.strokeWeight(2);
-        sk.rect(this.x, this.y, this.size, this.size);
-        sk.pop();
-      },
-      repulse(mouseX, mouseY) {
-        let dx = this.x - mouseX;
-        let dy = this.y - mouseY;
-        let distance = Math.sqrt(dx * dx + dy * dy);
+    draw(fillColor, strokeColor) {
+      sk.push();
+      sk.fill(fillColor);
+      sk.stroke(strokeColor);
+      sk.strokeWeight(2);
+      sk.rect(this.x, this.y, this.size, this.size);
+      sk.pop();
+    }
 
-        if (distance < repulsionRadius) {
-          let normalizedDistance = distance / repulsionRadius;
-          let force = Math.pow(1 - normalizedDistance, 2) * maxRepulsion;
+    repulse(mouseX, mouseY) {
+      let dx = this.x - mouseX;
+      let dy = this.y - mouseY;
+      let distance = Math.sqrt(dx * dx + dy * dy);
 
-          this.velocity.x += (dx / distance) * force;
-          this.velocity.y += (dy / distance) * force;
-        }
+      if (distance < repulsionRadius) {
+        // Calculate force based on distance (stronger near center)
+        let normalizedDistance = distance / repulsionRadius;
+        let force = Math.pow(1 - normalizedDistance, 2) * maxRepulsion;
 
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
+        // Apply force
+        this.velocity.x += (dx / distance) * force;
+        this.velocity.y += (dy / distance) * force;
+      }
 
-        this.velocity.x *= 0.9;
-        this.velocity.y *= 0.9;
+      // Apply velocity with a maximum speed limit
+      let speed = Math.sqrt(this.velocity.x ** 2 + this.velocity.y ** 2);
+      let maxSpeed = 200; // Increased for more dynamic movement
+      if (speed > maxSpeed) {
+        this.velocity.x = (this.velocity.x / speed) * maxSpeed;
+        this.velocity.y = (this.velocity.y / speed) * maxSpeed;
+      }
 
-        let returnForce = 0.05;
-        this.x += (this.originalX - this.x) * returnForce;
-        this.y += (this.originalY - this.y) * returnForce;
-      },
-    };
+      this.x += this.velocity.x;
+      this.y += this.velocity.y;
+
+      // Apply friction (reduced for more fluid motion)
+      this.velocity.x *= 0.92;
+      this.velocity.y *= 0.92;
+
+      // Return to original position with easing
+      let returnForce = 0.05; // Reduced for softer return
+      let dx2 = this.originalX - this.x;
+      let dy2 = this.originalY - this.y;
+      this.velocity.x += dx2 * returnForce;
+      this.velocity.y += dy2 * returnForce;
+
+      // Stop very small movements to prevent jittering
+      if (Math.abs(this.velocity.x) < 0.01) this.velocity.x = 0;
+      if (Math.abs(this.velocity.y) < 0.01) this.velocity.y = 0;
+      if (Math.abs(dx2) < 0.1 && Math.abs(dy2) < 0.1) {
+        this.x = this.originalX;
+        this.y = this.originalY;
+        this.velocity.x = 0;
+        this.velocity.y = 0;
+      }
+    }
   }
 
   sk.preload = () => {
@@ -104,20 +124,13 @@ new p5((sk) => {
 
         let posX = videoDimensions.x + x;
         let posY = videoDimensions.y + y;
-        pixels.push(createPixel(posX, posY, cellSize, brightness));
+        pixels.push(new Pixel(posX, posY, cellSize));
       }
     }
   }
 
   sk.draw = () => {
-    sk.background(255);
-
-    sk.push();
-    sk.fill("black");
-    sk.textSize(24);
-    sk.textAlign(sk.CENTER, sk.CENTER);
-    sk.text("EVERYWHERE IS JUST ONE PLACE", sk.width / 2, sk.height / 2);
-    sk.pop();
+    sk.background(247, 217, 0);
 
     if (videoDimensions) {
       animalVideo.loadPixels();
@@ -164,6 +177,12 @@ new p5((sk) => {
         }
       });
     }
+
+    sk.push();
+    sk.fill("black");
+    sk.textSize(sk.width * 0.04);
+    sk.text("FROM NOTHINGNESS", sk.width / 2, (sk.height / 4) * 3);
+    sk.pop();
 
     if (animalVideo.show) {
       sk.image(
